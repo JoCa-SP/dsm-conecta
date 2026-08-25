@@ -5,12 +5,13 @@ __pycache__/
 .venv/
 *.log
 
-# Flutter / Dart
+# Node / Web
+node_modules/
+dist/
 build/
-.dart_tool/
-.pub-cache/
-*.apk
-*.ipa
+*.local
+npm-debug.log
+yarn-debug.log
 
 # Docker / IDE
 .vscode/
