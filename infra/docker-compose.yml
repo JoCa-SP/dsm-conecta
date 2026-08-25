@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg14
+    environment:
+      POSTGRES_DB: dsm_conecta
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+
+  # API FastAPI (build local)
+  api:
+    build: ../backend/api
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=timescaledb
+      - MQTT_HOST=mosquitto
+    depends_on:
+      - timescaledb
+      - mosquitto
+
+volumes:
+  timescale_data:

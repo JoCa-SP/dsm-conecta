@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Evento de Navegação Web",
+  "type": "object",
+  "properties": {
+    "session_id": { "type": "string", "minLength": 10 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "pagina": { "type": "string", "enum": ["home", "matriz", "projetos", "quiz", "contato"] },
+    "user_agent": { "type": "string" }
+  },
+  "required": ["session_id", "timestamp", "pagina"],
+  "additionalProperties": false
+}

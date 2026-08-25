@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: DSM Conecta API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api/v1
+paths:
+  /conteudo/noticias:
+    get:
+      summary: Lista notícias
+      operationId: getNoticias
+      responses:
+        '200':
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    titulo: { type: string }
+                    data: { type: string }
+  /metrics/geral:
+    get:
+      summary: Métricas agregadas
+      operationId: getMetrics
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  visitantes_ativos: { type: integer }
+                  total_presencas: { type: integer }
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
