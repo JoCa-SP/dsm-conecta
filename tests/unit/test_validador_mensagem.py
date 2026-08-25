@@ -49,4 +49,3 @@ def test_validar_mensagem_pagina_invalida():
     }
     from backend.ingestao.validador import validar_mensagem
     assert validar_mensagem(mensagem) is False
-    
