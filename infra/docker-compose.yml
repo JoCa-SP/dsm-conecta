@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   mosquitto:
     image: eclipse-mosquitto:2.0
@@ -19,18 +18,6 @@ services:
       - "5432:5432"
     volumes:
       - timescale_data:/var/lib/postgresql/data
-
-  # API FastAPI (build local)
-  api:
-    build: ../backend/api
-    ports:
-      - "8000:8000"
-    environment:
-      - DB_HOST=timescaledb
-      - MQTT_HOST=mosquitto
-    depends_on:
-      - timescaledb
-      - mosquitto
 
 volumes:
   timescale_data:
