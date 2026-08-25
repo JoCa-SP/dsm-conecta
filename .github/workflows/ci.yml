@@ -1,44 +1,21 @@
-name: CI - DSM Conecta Web (Fase 0)
+name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  # Job para validar o Backend (Python)
-  backend-check:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
-
-      - name: Configurar Python
+      - uses: actions/checkout@v4
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
-      - name: Verificar se Python está instalado
-        run: python --version
-
-      - name: Verificar estrutura de pastas
-        run: ls -la backend/ || echo "Pasta backend ainda não tem código, mas tudo certo!"
-
-  # Job para validar o Frontend (Node)
-  frontend-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
-
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Verificar se Node está instalado
-        run: node --version
-
-      - name: Verificar estrutura de pastas
-        run: ls -la frontend/web/ || echo "Pasta frontend ainda não tem código, mas tudo certo!"
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Run tests with coverage
+        run: python -m pytest tests/ --cov=backend/ingestao --cov-report=term --cov-fail-under=70
