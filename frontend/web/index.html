@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSM Conecta - Teste MQTT</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        #consentimento { display: block; background: #f0f0f0; padding: 20px; border-radius: 8px; }
+        #status { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🧪 DSM Conecta - Teste MQTT</h1>
+
+    <div id="consentimento">
+        <h2>📊 Coleta de Dados</h2>
+        <p>Este aplicativo coleta dados de navegação para análise de engajamento. Nenhum dado pessoal identificável é armazenado.</p>
+        <button id="btn-consentir">✅ Sim, concordo</button>
+    </div>
+
+    <div id="botoes" style="display: none;">
+        <button onclick="enviarEvento('home')">🏠 Página Inicial</button>
+        <button onclick="enviarEvento('matriz')">📚 Matriz Curricular</button>
+        <button onclick="enviarEvento('projetos')">💻 Projetos</button>
+        <button onclick="enviarEvento('quiz')">❓ Quiz</button>
+        <button onclick="enviarEvento('contato')">📧 Contato</button>
+    </div>
+
+    <div id="status">🔴 Desconectado</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/paho-mqtt@1.1.0/paho-mqtt.min.js"></script>
+    <script>
+        // ===== CONFIGURAÇÃO =====
+        const clientId = 'web_' + Math.random().toString(16).substr(2, 8);
+        const sessionId = 'session_' + Math.random().toString(36).substr(2, 10);
+
+        let consentimentoDado = false;
+        let client = null; // Variável GLOBAL
+
+        // ===== CONEXÃO MQTT =====
+        function conectarMQTT() {
+            // CORREÇÃO: removido o "const" para usar a variável global
+            client = new Paho.Client('localhost', 9001, clientId);
+
+            client.onConnectionLost = function (responseObject) {
+                document.getElementById('status').innerHTML = '🔴 Desconectado';
+                console.warn('⚠️ Conexão perdida:', responseObject.errorMessage);
+            };
+
+            client.onMessageArrived = function (message) {
+                console.log('📩 Mensagem recebida:', message.payloadString);
+            };
+
+            client.connect({
+                onSuccess: function () {
+                    document.getElementById('status').innerHTML = '🟢 Conectado ao MQTT';
+                    // SÓ MOSTRA OS BOTÕES QUANDO CONECTAR!
+                    document.getElementById('botoes').style.display = 'block';
+                    console.log('✅ Conectado ao broker');
+                },
+                onFailure: function (err) {
+                    document.getElementById('status').innerHTML = '❌ Erro ao conectar: ' + err.errorMessage;
+                    console.error('❌ Falha na conexão:', err);
+                }
+            });
+        }
+
+        // ===== PUBLICAR EVENTO =====
+        function publicarEvento(topic, payload) {
+            if (!consentimentoDado) {
+                console.warn('⏳ Consentimento não dado. Evento não enviado.');
+                return;
+            }
+            if (!client || !client.isConnected()) {
+                console.warn('⚠️ MQTT não conectado. Evento não enviado.');
+                return;
+            }
+
+            const mensagem = new Paho.Message(JSON.stringify(payload));
+            mensagem.destinationName = topic;
+            mensagem.qos = 1;
+            client.send(mensagem);
+            console.log(`📤 Evento publicado: ${topic}`, payload);
+        }
+
+        // ===== ENVIAR EVENTO DE NAVEGAÇÃO =====
+        function enviarEvento(pagina) {
+            const payload = {
+                session_id: sessionId,
+                timestamp: new Date().toISOString(),
+                pagina: pagina,
+                user_agent: navigator.userAgent
+            };
+            publicarEvento('dsm/prod/app/interacao/tela', payload);
+        }
+
+        // ===== CONSENTIMENTO =====
+        document.getElementById('btn-consentir').addEventListener('click', function() {
+            consentimentoDado = true;
+            document.getElementById('consentimento').style.display = 'none';
+            // NÃO MOSTRA OS BOTÕES AQUI! SÓ INICIA A CONEXÃO.
+            console.log('✅ Consentimento dado. Conectando ao MQTT...');
+            conectarMQTT();
+        });
+
+        console.log('📱 Aplicativo carregado. Session ID:', sessionId);
+    </script>
+</body>
+</html>

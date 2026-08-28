@@ -1,0 +1,19 @@
+[33m280f978[m Initial commit
+[33m1150a17[m Update .gitignore to include IDE and Docker files
+[33m09c47ac[m Add Node.js and Web entries to .gitignore
+[33mcbeecda[m Add example environment configuration file
+[33mf3609ef[m Create ci.yml
+[33ma860595[m Delete .github/workflows directory
+[33meca5953[m feat(ci): adiciona pipeline de integracao continua (dummy)
+[33mccda7f3[m Merge branch 'main' of https://github.com/JoCa-SP/dsm-conecta into develop
+[33mf17b87a[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m Merge do README remoto
+[33m7634d8e[m fix(ci): move .github para a raiz do projeto
+[33macf98cd[m feat(iteracao0): finaliza estrutura, contratos, docker-compose, CI e TDD inicial
+[33mfaf1add[m feat(iteracao0): lapidacao final da estrutura
+[33me0445c7[m feat(README): Incremento de informacoes no README
+[33m393d550[m feat(ingestao): valida campos obrigatorios, tamanho, timestamp e pagina (TDD - green phase)
+[33mfa5c402[m feat(.flake8): adicao do .flake8
+[33m0c8f27f[m feat(ci): adiciona flake8, pytest com cobertura e bloqueio de merge
+[33m6278a7f[m fix(lint): corrige erros do flake8 (imports, blanks, comparacoes)
+[33m8f20474[m fix(lint): corrige erros do flake8 (quebra de linha)
+[33mfb91fd2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m fix(lint): corrige erros do flake8 (linha com whitespace)
