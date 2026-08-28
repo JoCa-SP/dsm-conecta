@@ -1,13 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Evento de Navegação Web",
+  "title": "Registro de Presença",
   "type": "object",
   "properties": {
     "session_id": { "type": "string", "minLength": 10 },
     "timestamp": { "type": "string", "format": "date-time" },
-    "pagina": { "type": "string", "enum": ["home", "matriz", "projetos", "quiz", "contato"] },
-    "user_agent": { "type": "string" }
+    "evento_id": { "type": "integer" },
+    "metodo": { "type": "string", "enum": ["qr", "geolocalizacao"] }
   },
-  "required": ["session_id", "timestamp", "pagina"],
+  "required": ["session_id", "timestamp", "evento_id", "metodo"],
   "additionalProperties": false
 }
