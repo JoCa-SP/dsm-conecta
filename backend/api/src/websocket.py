@@ -4,6 +4,7 @@ import asyncio
 from .analytics import janela_visitantes
 from .database import get_db_connection
 
+
 class ConnectionManager:
     def __init__(self):
         self.active_connections: list[WebSocket] = []
@@ -19,15 +20,15 @@ class ConnectionManager:
         for connection in self.active_connections:
             await connection.send_text(message)
 
+
 manager = ConnectionManager()
+
 
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
         while True:
-            # A cada 2 segundos, enviar dados atualizados
             await asyncio.sleep(2)
-            # Buscar número de visitantes ativos do banco
             conn = get_db_connection()
             cur = conn.cursor()
             cur.execute("""
@@ -37,7 +38,6 @@ async def websocket_endpoint(websocket: WebSocket):
             ativos = cur.fetchone()[0] or 0
             cur.close()
             conn.close()
-            # Atualizar a janela e verificar anomalia
             janela_visitantes.adicionar(ativos)
             media = janela_visitantes.media_movel()
             z = janela_visitantes.z_score(ativos)

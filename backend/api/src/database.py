@@ -11,6 +11,7 @@ DB_NAME = os.getenv("DB_NAME", "dsm_conecta")
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASS = os.getenv("DB_PASS", "postgres")
 
+
 def get_db_connection():
     return psycopg2.connect(
         host=DB_HOST, port=DB_PORT, dbname=DB_NAME,

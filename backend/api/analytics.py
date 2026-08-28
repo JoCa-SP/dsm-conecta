@@ -2,6 +2,7 @@ import math
 from collections import deque
 from datetime import datetime, timedelta
 
+
 class JanelaDeslizante:
     def __init__(self, tamanho=60, intervalo_segundos=5):
         self.tamanho = tamanho
@@ -36,8 +37,10 @@ class JanelaDeslizante:
             return 0
         return (valor - media) / desvio
 
+
 # Instância global para métricas de visitantes ativos
 janela_visitantes = JanelaDeslizante(tamanho=60, intervalo_segundos=5)
+
 
 def detectar_anomalia(valor, limite=3.0):
     z = janela_visitantes.z_score(valor)

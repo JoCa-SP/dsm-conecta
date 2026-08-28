@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from ..database import get_db_connection
 from ..models.schemas import MetricaGeral
 from datetime import datetime
 
 router = APIRouter()
+
 
 @router.get("/geral", response_model=MetricaGeral)
 def metricas_gerais():
@@ -29,6 +30,7 @@ def metricas_gerais():
         total_presencas=presencas,
         ultima_atualizacao=datetime.now()
     )
+
 
 @router.get("/sensores")
 def dados_sensores(limit: int = 10):

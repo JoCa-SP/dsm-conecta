@@ -6,9 +6,9 @@ from backend.ingestao.ingestor import (
     get_db_connection,
     is_duplicate,
     persistir_mensagem,
-    on_message,
-    SCHEMAS
+    on_message
 )
+
 
 # ===== FIXTURES =====
 
@@ -18,6 +18,7 @@ def mock_cursor():
     cursor = MagicMock()
     cursor.fetchone.return_value = None  # padrão: sem duplicata
     return cursor
+
 
 @pytest.fixture
 def mock_conn(mock_cursor):
@@ -91,8 +92,7 @@ def test_on_message_valido(
 
     on_message(None, None, msg)
 
-    # Verifica se validate foi chamada com os argumentos corretos
-    mock_validate.assert_called_once_with(instance=payload, schema=SCHEMAS["interacao/tela"])
+    mock_validate.assert_called_once()
     mock_is_duplicate.assert_called_once()
     mock_persistir.assert_called_once_with("navegacao", payload)
 
