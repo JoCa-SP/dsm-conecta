@@ -5,7 +5,6 @@ import psycopg2
 from psycopg2.extras import Json
 import paho.mqtt.client as mqtt
 from jsonschema import validate, ValidationError
-from datetime import datetime
 from dotenv import load_dotenv
 
 # ===== CONFIGURAÇÃO =====
@@ -34,19 +33,22 @@ SCHEMAS = {
     }
 }
 
-# ===== CONEXÃO COM O BANCO =====
+
 def get_db_connection():
+    """Retorna uma conexão com o banco de dados."""
     return psycopg2.connect(
         host=DB_HOST, port=DB_PORT, dbname=DB_NAME,
         user=DB_USER, password=DB_PASS
     )
 
-# ===== DEDUPLICAÇÃO =====
+
 def is_duplicate(categoria, sensor_id, timestamp):
+    """Verifica se já existe um registro com o mesmo sensor_id e timestamp."""
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        "SELECT 1 FROM telemetria WHERE categoria = %s AND dados_json->>'sensor_id' = %s AND timestamp = %s LIMIT 1",
+        "SELECT 1 FROM telemetria WHERE categoria = %s "
+        "AND dados_json->>'sensor_id' = %s AND timestamp = %s LIMIT 1",
         (categoria, sensor_id, timestamp)
     )
     exists = cur.fetchone() is not None
@@ -54,8 +56,9 @@ def is_duplicate(categoria, sensor_id, timestamp):
     conn.close()
     return exists
 
-# ===== PERSISTÊNCIA =====
+
 def persistir_mensagem(categoria, payload):
+    """Insere a mensagem na tabela telemetria."""
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
@@ -67,8 +70,9 @@ def persistir_mensagem(categoria, payload):
     conn.close()
     logging.info(f"✅ Mensagem persistida: {categoria} - {payload.get('sensor_id')}")
 
-# ===== CALLBACK MQTT =====
+
 def on_message(client, userdata, msg):
+    """Callback principal para mensagens MQTT."""
     topic = msg.topic
     logging.info(f"📩 Mensagem recebida: {topic}")
 
@@ -102,7 +106,9 @@ def on_message(client, userdata, msg):
 
         # 2. DEDUPLICAÇÃO
         if is_duplicate(categoria, sensor_id, payload.get("timestamp")):
-            logging.info(f"⏳ Mensagem duplicada ignorada: {sensor_id} - {payload.get('timestamp')}")
+            logging.info(
+                f"⏳ Mensagem duplicada ignorada: {sensor_id} - {payload.get('timestamp')}"
+            )
             return
 
         # 3. PERSISTÊNCIA
@@ -113,8 +119,9 @@ def on_message(client, userdata, msg):
     except Exception as e:
         logging.error(f"❌ Erro inesperado: {e}")
 
-# ===== CONFIGURAÇÃO DO CLIENTE MQTT =====
+
 def main():
+    """Ponto de entrada do ingestor."""
     logging.basicConfig(level=logging.INFO)
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     client.on_message = on_message
@@ -128,6 +135,7 @@ def main():
     except KeyboardInterrupt:
         logging.info("⏹️ Encerrando ingestor...")
         client.disconnect()
+
 
 if __name__ == "__main__":
     main()
