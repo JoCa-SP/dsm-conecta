@@ -18,6 +18,18 @@ services:
       - "5432:5432"
     volumes:
       - timescale_data:/var/lib/postgresql/data
-
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
+  
+  ingestao:
+    build: ../backend/ingestao
+    environment:
+      MQTT_HOST: mosquitto
+      DB_HOST: timescaledb
+    depends_on:
+      - mosquitto
+      - timescaledb
+    volumes:
+      - ../backend/ingestao:/app
+      
 volumes:
   timescale_data:
