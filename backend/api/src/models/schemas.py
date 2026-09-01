@@ -17,8 +17,7 @@ class ConteudoResponse(ConteudoBase):
     id: int
     data_criacao: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class MetricaGeral(BaseModel):
