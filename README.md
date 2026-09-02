@@ -295,7 +295,10 @@ Consulte a Fatec Zona Sul para autorização de uso comercial.
 
 ## 👥 Autores
 
+- **Fábio Jun Ariga** – Desenvolvimento e documentação
 - **João Carlos** – Desenvolvimento e documentação
+- **José Cícero Pereira Da Cruz** – Desenvolvimento e documentação
+- **Vinicius de Almeida Romagnolo** – Desenvolvimento e documentação
 - **Prof. Dr. Winston Aparecido Andrade** – Orientação
 
 Curso Superior de Tecnologia em **Desenvolvimento de Software Multiplataforma**  
